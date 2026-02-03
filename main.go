@@ -43,8 +43,14 @@ func parseCmdArgs() ([]ArgCoinInfo, Settings) {
 			}
 
 			symbol := splitted[0]
-			bottom, _ := strconv.ParseFloat(splitted[1], 64)
-			top, _ := strconv.ParseFloat(splitted[2], 64)
+			bottom, err := strconv.ParseFloat(splitted[1], 64)
+			if err != nil {
+				panic(splitted[1] + " is invalid low amount.")
+			}
+			top, err := strconv.ParseFloat(splitted[2], 64)
+			if err != nil {
+				panic(splitted[2] + " is invalid low amount.")
+			}
 
 			coins = append(coins, ArgCoinInfo{
 				Symbol: symbol,
