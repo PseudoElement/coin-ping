@@ -43,6 +43,9 @@ func parseCmdArgs() ([]ArgCoinInfo, Settings) {
 			}
 
 			symbol := splitted[0]
+			if len(symbol) < 1 {
+				panic(splitted[0] + " is invalid symbol.")
+			}
 			bottom, err := strconv.ParseFloat(splitted[1], 64)
 			if err != nil {
 				panic(splitted[1] + " is invalid low amount.")
@@ -68,6 +71,10 @@ func parseCmdArgs() ([]ArgCoinInfo, Settings) {
 			}
 			settings.DelayMinutes = minutes
 		}
+	}
+
+	if len(coins) == 0 {
+		panic("--token param not provided")
 	}
 
 	return coins, settings

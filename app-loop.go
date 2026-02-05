@@ -26,9 +26,9 @@ func runLoop(coins []ArgCoinInfo, apiKey string, settngs Settings) {
 		}
 		if !success {
 			showNotification("CMC api error", errResp.Status.ErrorMessage)
+		} else {
+			checkPrices(cmcQuotesResp, coins)
 		}
-
-		checkPrices(cmcQuotesResp, coins)
 
 		time.Sleep(time.Duration(settngs.DelayMinutes) * time.Minute)
 	}
@@ -51,7 +51,6 @@ func findCoinBySymbol(symbol string, coins []ArgCoinInfo) *ArgCoinInfo {
 			return &coin
 		}
 	}
-
 	return nil
 }
 
