@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"log"
 	"os/exec"
 	"strconv"
 	"time"
@@ -25,7 +27,9 @@ func runLoop(coins []ArgCoinInfo, apiKey string, settngs Settings) {
 			showNotification("Critical error", err.Error())
 		}
 		if !success {
-			showNotification("CMC api error", errResp.Status.ErrorMessage)
+			buf, _ := json.Marshal(errResp)
+			log.Println("CMC api error ==> ", string(buf))
+			showNotification("CMC api error", string(buf))
 		} else {
 			checkPrices(cmcQuotesResp, coins)
 		}
