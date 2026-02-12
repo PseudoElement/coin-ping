@@ -35,3 +35,4 @@ coin-ping
 # .vscode/
 
 com.coinping.agent.plist
+logs.txt

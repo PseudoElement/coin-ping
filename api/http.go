@@ -24,7 +24,7 @@ func Get(urlStr string, successResp any, errResp any, params [][2]string, header
 
 	req, err := http.NewRequestWithContext(ctx, "GET", urlStr, nil)
 	if err != nil {
-		panic(err)
+		return err, false
 	}
 
 	if len(headers) > 0 {
@@ -41,7 +41,7 @@ func Get(urlStr string, successResp any, errResp any, params [][2]string, header
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		return err, false
 	}
 
 	if resp.StatusCode != http.StatusOK {

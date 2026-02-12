@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os/exec"
 	"strconv"
 	"time"
@@ -12,7 +11,7 @@ import (
 	"github.com/pseudoelement/coin-ping/api"
 )
 
-func runLoop(coins []ArgCoinInfo, apiKey string, settngs Settings) {
+func runLoop(coins []ArgCoinInfo, apiKey string, settings Settings) {
 	for {
 		var cmcQuotesResp api.CoinMarketCapCoinQuotesLatestResp
 		var errResp api.CoinMarketCapErrorResp
@@ -24,17 +23,19 @@ func runLoop(coins []ArgCoinInfo, apiKey string, settngs Settings) {
 			[][2]string{{"X-CMC_PRO_API_KEY", apiKey}},
 		)
 		if err != nil {
+			println("ERORR")
 			showNotification("Critical error", err.Error())
+			go logs_file.Write([]byte("[app-loop.go:runLoop():api.Get()] err.Error(): " + err.Error() + "\n"))
 		}
 		if !success {
 			buf, _ := json.Marshal(errResp)
-			log.Println("CMC api error ==> ", string(buf))
-			showNotification("CMC api error", string(buf))
+			showNotification("CMC api error", "Buffer: "+string(buf)+"\n")
+			go logs_file.Write([]byte("[app-loop.go:runLoop():api.Get()] buf: " + string(buf) + "\n\n"))
 		} else {
 			checkPrices(cmcQuotesResp, coins)
 		}
 
-		time.Sleep(time.Duration(settngs.DelayMinutes) * time.Minute)
+		time.Sleep(time.Duration(settings.DelayMinutes) * time.Minute)
 	}
 }
 

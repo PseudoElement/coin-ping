@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -18,6 +19,8 @@ type Settings struct {
 	DelayMinutes int
 }
 
+var logs_file io.Writer = nil
+
 func main() {
 	godotenv.Load()
 	apiKey := os.Getenv("COIN_MARKET_CAP_API_KEY")
@@ -25,9 +28,23 @@ func main() {
 		panic("COIN_MARKET_CAP_API_KEY var is required.")
 	}
 
-	argCoins, settngs := parseCmdArgs()
+	err := openLogsFile()
+	if err != nil {
+		panic("Failed open logs.txt. Error: " + err.Error())
+	}
 
-	runLoop(argCoins, apiKey, settngs)
+	argCoins, settings := parseCmdArgs()
+
+	runLoop(argCoins, apiKey, settings)
+}
+
+func openLogsFile() error {
+	file, err := os.OpenFile("./logs.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		return err
+	}
+	logs_file = file
+	return nil
 }
 
 func parseCmdArgs() ([]ArgCoinInfo, Settings) {
